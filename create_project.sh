@@ -26,12 +26,10 @@ EOF
 # Create code.cpp
 cat > "$NEW_DIR/code.cpp" <<EOF
 #include <iostream>
-
-extern "C" int some_function(); // Example external function
+using namespace std;
+extern "C" ; // Example external function
 
 int main() {
-    std::cout << "Hello from C++!\n";
-    some_function();
     return 0;
 }
 EOF
