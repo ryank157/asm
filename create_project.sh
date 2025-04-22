@@ -12,15 +12,13 @@ mkdir "$NEW_DIR"
 
 # Create asm.asm
 cat > "$NEW_DIR/asm.asm" <<EOF
-; extern "C" unsinged int IntegerLogical_(uint a, uint b, uint c, uint d)
 ; Linux ABI rdi, rsi, rdx, rcx, r8, and r9
 ; Windows ABI rcx, rdx, r8, and r9
 section .text
     global _start
 
 _start:
-    mov rax, 60      ; syscall for exit
-    xor rdi, rdi      ; exit code 0
+
     ret
 section .note.GNU-stack
 EOF
