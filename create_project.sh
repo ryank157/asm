@@ -26,6 +26,7 @@ EOF
 # Create code.cpp
 cat > "$NEW_DIR/code.cpp" <<EOF
 #include <iostream>
+#include <iomanip>
 using namespace std;
 extern "C" ; // Example external function
 
