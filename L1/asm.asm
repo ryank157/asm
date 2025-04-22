@@ -18,3 +18,5 @@ section .text
        add eax, edx        ; eax += c (from rdx)
        sub eax, ecx        ; eax -= d (from rcx)
        ret                  ; Return to caller
+
+       section .note.GNU-stack

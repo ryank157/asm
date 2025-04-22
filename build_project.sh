@@ -17,7 +17,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Compile the C++ code
-g++ -c "$DIR/code.cpp" -o "$DIR/code.o" -std=c++17 -Wall -fPIE
+g++ -c "$DIR/code.cpp" -o "$DIR/code.o" -std=c++17 -Wall -fPIE -O2
 if [ $? -ne 0 ]; then
   echo "Compilation failed!"
   exit 1
@@ -29,6 +29,10 @@ if [ $? -ne 0 ]; then
   echo "Linking failed!"
   exit 1
 fi
+
+# objdump -d -M intel "$DIR/code.o" > "$DIR/code.dump"
+# objdump -d -M intel "$DIR/asm.o" > "$DIR/asm.dump"
+objdump -d -M intel "$DIR/main" > "$DIR/main.dump"
 
 echo "Build successful!"
 
