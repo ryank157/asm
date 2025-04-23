@@ -1,0 +1,46 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Assemble Active File's ASM",
+			"type": "shell",
+			"command": "nasm", // Or your assembler command
+			"args": [
+				"-f",
+				"elf64", // Output format for Linux
+				"${fileDirname}/asm.asm", // Assumes asm.asm is in the same dir as the active file
+				"-o",
+				"${fileDirname}/asm.o", // Output object in the same dir
+				"-g",
+				"-F",
+				"dwarf"
+			],
+			"options": {
+				"cwd": "${fileDirname}" // Set CWD to the active file's directory
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Build and Link Active File's Directory",
+			"type": "shell",
+			"command": "g++",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"${fileDirname}/code.cpp", // Assumes code.cpp is in the same dir
+				"${fileDirname}/asm.o", // Assumes asm.o is in the same dir
+				"-o",
+				"${fileDirname}/main" // Output executable in the same dir
+			],
+			"options": {
+				"cwd": "${fileDirname}" // Set CWD to the active file's directory
+			},
+			"problemMatcher": ["$gcc"],
+			"group": {
+				"kind": "build",
+				"isDefault": true // Make this the default build task
+			},
+			"dependsOn": "Assemble Active File's ASM" // Depends on the assembler task
+		}
+	]
+}
