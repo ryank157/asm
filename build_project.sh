@@ -1,16 +1,15 @@
 #!/bin/bash
-
 # Check if a directory argument is provided
 if [ -z "$1" ]; then
   echo "Usage: $0 <directory>"
   exit 1
 fi
-
 # Set the directory variable
 DIR="$1"
 
 # Assemble the assembly file
-nasm -f elf64 "$DIR/asm.asm" -o "$DIR/asm.o"
+# Add -i "$DIR/" to tell NASM to look for includes in the project directory
+nasm -f elf64 -i "$DIR/" "$DIR/asm.asm" -o "$DIR/asm.o"
 if [ $? -ne 0 ]; then
   echo "Assembly failed!"
   exit 1
@@ -37,4 +36,4 @@ objdump -d -M intel "$DIR/main" > "$DIR/main.dump"
 echo "Build successful!"
 
 # Optionally, run the executable
-./"$DIR/main"
+"./$DIR/main"
