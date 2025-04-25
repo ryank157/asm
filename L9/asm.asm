@@ -5,41 +5,48 @@
 ;
 ; extern "C" Int64 Cc1_(int8_t a, int16_t b, int32_t c, int64_t d, int8_t e, int16_t f,
 ; int32_t g, int64_t h);
-
 section .data
-   %define RBP_OFFSET 24
+   %define RBP_OFFSET 16 ; Adjusted this value
 
 section .text
     global Cc1_
-    global Prolog
-
-Prolog:
-    push rbp ; save caller's rbp reg
-    ; .pushreg rbp ; assembler directive - commented out
-    sub rsp, 16 ; alloc for local vars
-    ; .allocstack 16 ; assembler directive - commented out
-    mov rbp, rsp ; update frame
-    ; .setframe rbp, 0 ; assembler directive - commented out
-    ; .endprolog ; assembler directive - commented out
 
 Cc1_:
-    movsx rdi, dil ; a (corrected rdw to dil)
-    movsx rsi, si ; b (corrected rsw to si)
-    movsxd rdx, edx ; c
-    add rdi, rsi ; a+b
-    add rdx, rcx ; c+d
-    add rdx, rdi ; a+b+c+d
-    mov [rbp], rdx
-    movsx r8, r8b ; e (corrected r8w to r8b)
-    movsx r9, r9w ; f (corrected r9d to r9w)
-    movsxd rdx, dword [rbp + RBP_OFFSET + 8]  ; g
-    add r8, r9 ; e+f
-    add rdx, [rbp + RBP_OFFSET + 16]  ; g + h
-    add rdx, r8 ; e+f+g+h
-    mov rax, [rbp]
-    add rax, rdx ; final sum
-    add rsp, 16
-    pop rbp
+    ; Function prologue
+    push rbp ; save caller's rbp reg
+    mov rbp, rsp ; update frame pointer
+    sub rsp, 16 ; allocate stack space for local variables
+
+    ; Process first 6 args which are in registers in Linux ABI
+    movsx rax, dil ; a (8-bit)
+    movsx rcx, si ; b (16-bit)
+    movsxd rdx, edx ; c (32-bit)
+    ; d is already in rcx as 64-bit
+    movsx r10, r8b ; e (8-bit)
+    movsx r11, r9w ; f (16-bit)
+
+    ; Calculate a+b+c+d
+    add rax, rcx ; a+b
+    add rdx, r8 ; c+d
+    add rax, rdx ; a+b+c+d
+    mov [rbp-8], rax ; store this temporarily
+
+    ; Get g and h from stack (7th and 8th parameters)
+    movsxd r8, dword [rbp+16]  ; g (7th param) - 32-bit
+    mov r9, [rbp+24]           ; h (8th param) - 64-bit
+
+    ; Calculate e+f+g+h
+    add r10, r11 ; e+f
+    add r8, r9 ; g+h
+    add r10, r8 ; e+f+g+h
+
+    ; Calculate final result
+    mov rax, [rbp-8]
+    add rax, r10 ; (a+b+c+d) + (e+f+g+h)
+
+    ; Function epilogue
+    mov rsp, rbp ; restore stack pointer
+    pop rbp ; restore base pointer
     ret
 
 section .note.GNU-stack
