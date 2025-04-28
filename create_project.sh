@@ -28,7 +28,6 @@ EOF
 
 # Create code.cpp
 cat > "$NEW_DIR/code.cpp" <<EOF
-#include "code.h"
 #include <iostream>
 #include <iomanip>
 using namespace std;
