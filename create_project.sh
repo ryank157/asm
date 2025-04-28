@@ -28,7 +28,7 @@ EOF
 
 # Create code.cpp
 cat > "$NEW_DIR/code.cpp" <<EOF
-#include <code.h>
+#include "code.h"
 #include <iostream>
 #include <iomanip>
 using namespace std;
@@ -39,6 +39,5 @@ int main() {
 }
 EOF
 
-cat > "$NEW_DIR/code.h" << EOF
 
 echo "Project created at: $NEW_DIR"
